@@ -11,7 +11,7 @@ var scene = new THREE.Scene();
 // Create a three.js camera
 var camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 1000 );
 scene.add(camera);
-camera.position.set( 0, 3, 0 );
+camera.position.set( 0, 1, 0 );
 
 // Apply VR headset positional data to camera.
 var controls = new THREE.VRControls( camera );
@@ -24,7 +24,7 @@ effect.setSize( window.innerWidth, window.innerHeight );
 
 var pi = 3.141592653589793238;
 
-scene.fog = new THREE.FogExp2( 0xddddfd, 0.15 );
+scene.fog = new THREE.FogExp2( 0xddddfd, 0.07);
 
 var everything = new THREE.Object3D();
 scene.add( everything );
@@ -35,15 +35,31 @@ var groundMaterial = new THREE.MeshLambertMaterial( { color: 0xffffff, side: THR
 var ground = new THREE.Mesh( groundGeometry, groundMaterial );
 ground.rotation.x = -pi/2;
 everything.add( ground );
-for (var i = 0; i < ground.geometry.vertices.length; i++){
+/*for (var i = 0; i<ground.geometry.vertices.length; i++){
   ground.geometry.vertices[i].z = 1.5 - 0.7*Math.sin(ground.geometry.vertices[i].y/2) - 1.3*Math.sin(ground.geometry.vertices[i].x/4) - 1.3*Math.cos(ground.geometry.vertices[i].y/4) - 0.8*Math.cos(ground.geometry.vertices[i].x/3) - 3*Math.sin(ground.geometry.vertices[1].x/25);
-};
+};*/
+for (var i = 0; i<ground.geometry.vertices.length; i++) {
+  ground.geometry.vertices[i].z = (Math.random() + 1) - 1.5 * Math.sin(ground.geometry.vertices[i].y/5) - 1.5 * Math.sin(ground.geometry.vertices[i].x/5) - 2.8 * Math.cos(ground.geometry.vertices[i].y/18);
+}
 
-var snowFloor = 0;
+// sky
+var skyGeometry = new THREE.PlaneGeometry( 100, 100, 50, 50 );
+var skyMaterial = new THREE.MeshBasicMaterial( { color: 0xbcbcbc, side: THREE.DoubleSide, wireframe: false } );
+var sky = new THREE.Mesh( skyGeometry, skyMaterial );
+sky.rotation.x = -pi/2;
+sky.position.y = 16;
+everything.add( sky );
+for (var i = 0; i<sky.geometry.vertices.length;i++) {
+  sky.geometry.vertices[i].z = 2.3 * Math.sin(sky.geometry.vertices[i].y/5) - 1.2 * Math.sin(sky.geometry.vertices[i].x/4);
+}
+/*for (var i = 0; i<sky.geometry.vertices.length; i++){
+  sky.geometry.vertices[i].z = 1.5 - 1.3*Math.sin(sky.geometry.vertices[i].y/3) - Math.sin(sky.geometry.vertices[i].x/2.6) - 1.1*Math.cos(sky.geometry.vertices[i].y/3.8) - 2.1*Math.cos(sky.geometry.vertices[i].x/3.3);
+};*/
 
 // snow
+var snowFloor = 0;
 var particles = new THREE.Geometry();
-var partCount = 10000;
+var partCount = 10;
 for (var p = 0; p<partCount; p++) {
   var part = new THREE.Vector3(
     24 * Math.random() - 12,
@@ -63,17 +79,33 @@ partSystem.sortParticles = true;
 partSystem.frustumCulled = false;
 everything.add( partSystem );
 
-// sky
-var skyGeometry = new THREE.PlaneGeometry( 100, 100, 50, 50 );
-var skyMaterial = new THREE.MeshLambertMaterial( { color: 0xbcbcbc, side: THREE.DoubleSide, wireframe: false } );
-var sky = new THREE.Mesh( skyGeometry, skyMaterial );
-sky.rotation.x = -pi/2;
-sky.position.y = 12;
-everything.add( sky );
-for (var i = 0; i < sky.geometry.vertices.length; i++){
-  sky.geometry.vertices[i].z = 1.5 - 1.3*Math.sin(sky.geometry.vertices[i].y/3) - Math.sin(sky.geometry.vertices[i].x/2.6) - 1.1*Math.cos(sky.geometry.vertices[i].y/3.8) - 2.1*Math.cos(sky.geometry.vertices[i].x/3.3);
-};
+// trees
+var tree = [];
+var treeVector = [];
+var treeHeight = [];
+var treeWidth = [];
+var treeNumber = 50;
+for (var i = 0; i<treeNumber; i++) {
+  treeVector[i] = new THREE.Vector2();
+  treeWidth[i] = Math.random() + 1;
+  treeHeight[i] = Math.random() * 5 + 3;
+  tree[i] = new THREE.Mesh(
+    new THREE.CylinderGeometry( 0.01, treeWidth[i], treeHeight[i] ),
+    new THREE.MeshLambertMaterial( { color: 0x00bb00, side: THREE.DoubleSide, wireframe: false } )
+  );
+  tree[i].position.x = Math.random() * 50 - 25;
+  tree[i].position.y = treeHeight[i] / 2;
+  tree[i].position.z = Math.random() * 50 - 25;
+  everything.add( tree[i] );
+}
 
+// lights
+var light = new THREE.PointLight( 0xffffff, 1.25, 100  );
+light.position.set( 0, 25, 0 );
+light.castShadow = true;
+everything.add( light );
+
+// directional cubes because I am completely unable to think spatially
 var cubePosX = new THREE.Mesh( new THREE.BoxGeometry( 1, 1, 1 ), new THREE.MeshBasicMaterial( { color: 0x00ff00 } ));
 cubePosX.position.set( 1, 3, 0 );
 // everything.add( cubePosX );
@@ -85,12 +117,6 @@ cubePosY.position.set( 0, 4, 0 );
 var cubePosZ = new THREE.Mesh( new THREE.BoxGeometry( 1, 1, 1 ), new THREE.MeshBasicMaterial( { color: 0xff0000 } ));
 cubePosZ.position.set( 0, 3, 1 );
 // everything.add( cubePosZ );
-
-// lights
-var light = new THREE.PointLight( 0xffffff, 1.25, 100  );
-light.position.set( 0, 25, 0 );
-light.castShadow = true;
-everything.add( light );
 
 /* sled which I can't
   var sled = new THREE.Object3D();
@@ -143,7 +169,7 @@ function animate() {
   // Apply any desired changes for the next frame here.
   for (var p = 0; p<partCount; p++) {
     // check if we need to reset particles
-    if (particles.vertices[p].y < snowFloor) {
+    if (particles.vertices[p].y<snowFloor) {
       particles.vertices[p].set(
         24*Math.random() - 12 + camera.position.x,
         snowFloor + 12,
