@@ -9,7 +9,7 @@ document.body.appendChild( renderer.domElement );
 var scene = new THREE.Scene();
 
 // Create a three.js camera
-var camera = new THREE.PerspectiveCamera( 110, window.innerWidth / window.innerHeight, 0.01, 1000 );
+var camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 1000 );
 scene.add(camera);
 camera.position.set( 0, 3, 0 );
 
@@ -43,11 +43,11 @@ var snowFloor = 0;
 
 // snow
 var particles = new THREE.Geometry();
-var partCount = 1000;
+var partCount = 10000;
 for (var p = 0; p<partCount; p++) {
   var part = new THREE.Vector3(
     24 * Math.random() - 12,
-    16 * Math.random() + snowFloor,
+    12 * Math.random() + snowFloor,
     24 * Math.random() - 12
     );
   part.velocity = new THREE.Vector3(
@@ -68,7 +68,7 @@ var skyGeometry = new THREE.PlaneGeometry( 100, 100, 50, 50 );
 var skyMaterial = new THREE.MeshLambertMaterial( { color: 0xbcbcbc, side: THREE.DoubleSide, wireframe: false } );
 var sky = new THREE.Mesh( skyGeometry, skyMaterial );
 sky.rotation.x = -pi/2;
-sky.position.y = 16;
+sky.position.y = 12;
 everything.add( sky );
 for (var i = 0; i < sky.geometry.vertices.length; i++){
   sky.geometry.vertices[i].z = 1.5 - 1.3*Math.sin(sky.geometry.vertices[i].y/3) - Math.sin(sky.geometry.vertices[i].x/2.6) - 1.1*Math.cos(sky.geometry.vertices[i].y/3.8) - 2.1*Math.cos(sky.geometry.vertices[i].x/3.3);
@@ -76,19 +76,19 @@ for (var i = 0; i < sky.geometry.vertices.length; i++){
 
 var cubePosX = new THREE.Mesh( new THREE.BoxGeometry( 1, 1, 1 ), new THREE.MeshBasicMaterial( { color: 0x00ff00 } ));
 cubePosX.position.set( 1, 3, 0 );
-everything.add( cubePosX );
+// everything.add( cubePosX );
 
 var cubePosY = new THREE.Mesh( new THREE.BoxGeometry( 1, 1, 1 ), new THREE.MeshBasicMaterial( { color: 0x0000ff } ));
 cubePosY.position.set( 0, 4, 0 );
-everything.add( cubePosY );
+// everything.add( cubePosY );
 
 var cubePosZ = new THREE.Mesh( new THREE.BoxGeometry( 1, 1, 1 ), new THREE.MeshBasicMaterial( { color: 0xff0000 } ));
 cubePosZ.position.set( 0, 3, 1 );
-everything.add( cubePosZ );
+// everything.add( cubePosZ );
 
-// light
-var light = new THREE.PointLight( 0xffffff, 1, 100  );
-light.position.set( -10, 4, -2 );
+// lights
+var light = new THREE.PointLight( 0xffffff, 1.25, 100  );
+light.position.set( 0, 25, 0 );
 light.castShadow = true;
 everything.add( light );
 
@@ -146,7 +146,7 @@ function animate() {
     if (particles.vertices[p].y < snowFloor) {
       particles.vertices[p].set(
         24*Math.random() - 12 + camera.position.x,
-        snowFloor + 16,
+        snowFloor + 12,
         24*Math.random() - 12 + camera.position.z);
       particles.vertices[p].velocity.y = -Math.random() + 0.0001;
     }
@@ -155,8 +155,8 @@ function animate() {
     particles.vertices[p].z += particles.vertices[p].velocity.z;
     particles.vertices[p].x += particles.vertices[p].velocity.x;
   }
-  light.position.x = camera.position.x;
-  light.position.y = camera.position.y;
+  light.position.x = camera.position.x - 10;
+  light.position.z = camera.position.z + 6;
       
   // Update VR headset position and apply to camera.
   controls.update();
@@ -184,7 +184,7 @@ function onkey(event) {
   event.preventDefault();
 
   if (event.keyCode == 90) { // z
-    controls.resetSensor(); //zero rotation
+    camera.rotation.z = 0; //zero rotation
   } else if (event.keyCode == 70 || event.keyCode == 13) { //f or enter
     effect.setFullScreen(true) //fullscreen
   }
