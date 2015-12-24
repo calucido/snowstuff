@@ -59,7 +59,7 @@ for (var i = 0; i<sky.geometry.vertices.length;i++) {
 // snow
 var snowFloor = 0;
 var particles = new THREE.Geometry();
-var partCount = 10;
+var partCount = 10000;
 for (var p = 0; p<partCount; p++) {
   var part = new THREE.Vector3(
     24 * Math.random() - 12,
