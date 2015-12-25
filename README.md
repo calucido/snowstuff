@@ -1,3 +1,4 @@
+***mostly blatantly stolen from the EleVR project and vihart's [snowplace](https://github.com/vihart/snowplace) project***
 # The eleVR webVR Boilerplate
 This is the standard ThreeJS-based boilerplate for webVR currently being used by [the eleVR team](http://elevr.com). It is a starting point for web-based VR experiences that work with the Oculus Rift as well as with smartphones + a google cardboard or similar phoneVR headset. There is also a non-VR fallback for experiencing the content without a VR device.
 
