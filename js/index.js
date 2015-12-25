@@ -55,7 +55,7 @@ for (var i = 0; i<sky.geometry.vertices.length;i++) {
 // snow
 var snowFloor = -3;
 var particles = new THREE.Geometry();
-var partCount = 500;
+var partCount = 2200;
 for (var p = 0; p<partCount; p++) {
   var part = new THREE.Vector3(
     24 * Math.random() - 12,
@@ -80,7 +80,7 @@ var tree = [];
 var treeVector = [];
 var treeHeight = [];
 var treeWidth = [];
-var treeNumber = 15;
+var treeNumber = 18;
 for (var i = 0; i<treeNumber; i++) {
   treeVector[i] = new THREE.Vector2();
   treeWidth[i] = Math.random() / 4 + 1;
@@ -96,7 +96,7 @@ for (var i = 0; i<treeNumber; i++) {
 
 // cool trees
 var pine = [];
-var pineNumber = 10;
+var pineNumber = 12;
 for (var i = 0; i<pineNumber; i++) {
   var branchNumber = Math.random() * 20 + 10;
   pine[i] = new THREE.Object3D();
